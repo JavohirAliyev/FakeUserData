@@ -1,16 +1,20 @@
 ﻿@page "/"
 
 @code {
-    public int seed;
-    private string locale;
+    public int seed = 0;
+    private string locale = "en";
+
     DataGenerator data = new DataGenerator();
 
     List<PersonModel> GeneratedPeople = new();
 
+
     void LoadData()
     {
-        var results = data.GeneratePerson();
-        GeneratedPeople.Add(results);
+        data.SetSeedAndLocale(seed, locale);
+        GeneratedPeople.Clear();
+        var results = data.GeneratePeople().Take(20);
+        GeneratedPeople.AddRange(results);
     }
 
     private void SetLocale(ChangeEventArgs e)
@@ -24,7 +28,6 @@
         if (int.TryParse(e.Value?.ToString(), out int value))
         {
             seed = value;
-            Console.WriteLine(seed);
             LoadData();
         }
     }
@@ -33,7 +36,6 @@
     {
         Random rn = new();
         seed = rn.Next(1, 100000);
-        Console.WriteLine(seed);
         LoadData();
     }
 
@@ -49,8 +51,8 @@
     <div class="dropdown d-flex flex-row">
         <label for="selectRegion" class="form-dropdown mr-3 h4">Region: </label>
         <select @onchange="SetLocale"  id="selectRegion" name="number">
-            <option value="pl">Poland</option>
             <option value="en">USA</option>
+            <option value="pl">Poland</option>
             <option value="it">Italy</option>
             <option value="ru">Russia</option>
         </select>
