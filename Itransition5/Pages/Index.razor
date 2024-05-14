@@ -1,0 +1,120 @@
+﻿@page "/"
+
+@code {
+    public int seed;
+    private string locale;
+    DataGenerator data = new DataGenerator();
+
+    List<PersonModel> GeneratedPeople = new();
+
+    void LoadData()
+    {
+        var results = data.GeneratePerson();
+        GeneratedPeople.Add(results);
+    }
+
+    private void SetLocale(ChangeEventArgs e)
+    {
+        locale = e.Value.ToString();
+        LoadData();
+    }
+
+    private void SetSeed(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int value))
+        {
+            seed = value;
+            Console.WriteLine(seed);
+            LoadData();
+        }
+    }
+
+    private void GenerateRandomSeed()
+    {
+        Random rn = new();
+        seed = rn.Next(1, 100000);
+        Console.WriteLine(seed);
+        LoadData();
+    }
+
+
+
+}
+
+
+<PageTitle>Fake Data</PageTitle>
+
+<EditForm id="form" Model=@data>
+<div class="container container-md mt-5 d-flex flex-row justify-content-between">
+    <div class="dropdown d-flex flex-row">
+        <label for="selectRegion" class="form-dropdown mr-3 h4">Region: </label>
+        <select @onchange="SetLocale"  id="selectRegion" name="number">
+            <option value="pl">Poland</option>
+            <option value="en">USA</option>
+            <option value="it">Italy</option>
+            <option value="ru">Russia</option>
+        </select>
+
+    </div>
+    <div class="slider-control d-flex flex-row">
+        <label for="errorRange" class="form-label mr-3 h4">Error:</label>
+        <input oninput="updateNumericUpDown()" type="range" class="form-range mr-2" min="0" max="10" id="errorRange">
+        <input oninput="updateNumericRange()" type="number" min="0" max="1000" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" id="errorNumUpDown">
+    </div>
+    <div class="seed d-flex flex-row">
+        <label for="seedNumUpDown" class="form-label mr-3 h4">Seed: </label>
+        <input @oninput="SetSeed" value="@seed" type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" id="seedNumUpDown">
+        <button class="btn btn-secondary" @onclick="GenerateRandomSeed" id="seedGenerator"><i class="bi bi-shuffle"></i></button>
+    </div>
+    <div class="btn btn-outline-dark">Export</div>
+</div>
+</EditForm>
+
+
+
+
+<div class="container mt-5">
+    <table class="table table-striped table-bordered">
+        <thead class="p-2">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Guid</th>
+                <th scope="col">Name</th>
+                <th scope="col">Address</th>
+                <th scope="col">Phone number</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in GeneratedPeople)
+            {
+                <tr>
+                    <td>@(GeneratedPeople.IndexOf(p)+1)</td>
+                    <td>@p.Id</td>
+                    <td>@p.Name</td>
+                    <td>@p.Address</td>
+                    <td>@p.Phone</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+
+    function updateNumericUpDown() {
+        var rangeValue = document.getElementById('errorRange').value;
+        document.getElementById('errorNumUpDown').value = rangeValue;
+    }
+
+    function updateNumericRange() {
+        var rangeValue = document.getElementById('errorNumUpDown').value;
+        document.getElementById('errorRange').value = Math.min(rangeValue, 10);
+    }
+
+    function generateRandomNumber() {
+        var rn = Math.floor(Math.random()*100000);
+        document.getElementById('seedNumUpDown').value = rn;
+    }
+
+</script>

@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Itransition5.props" />
+</Project>
