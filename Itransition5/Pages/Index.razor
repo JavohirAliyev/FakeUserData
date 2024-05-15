@@ -132,7 +132,7 @@
         document.addEventListener('scroll', function (e) {
             let documentHeight = document.body.scrollHeight;
             let currentScroll = window.scrollY + window.innerHeight;
-            let modifier = 20;
+            let modifier = 200;
             if (currentScroll + modifier > documentHeight) {
                 DotNet.invokeMethodAsync('Itransition5', 'HandleScroll');
             }
