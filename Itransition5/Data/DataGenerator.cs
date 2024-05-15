@@ -6,8 +6,8 @@ namespace Itransition5.Data
 {
 	public class DataGenerator
 	{
-        private string locale = "ru";
-        private int seed = 123;
+        private string locale;
+        private int seed;
 
         Faker<PersonModel> faker;
         public void SetSeedAndLocale(int _seed, string _locale)

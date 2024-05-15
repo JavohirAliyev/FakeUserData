@@ -1,15 +1,21 @@
-﻿@page "/"
+﻿@inject IJSRuntime JSRuntime
+
+
+
+@page "/"
 
 @code {
-    public int seed = 0;
-    private string locale = "en";
-
-    DataGenerator data = new DataGenerator();
-
-    List<PersonModel> GeneratedPeople = new();
 
 
-    void LoadData()
+    public static int seed = 0;
+    private static string locale = "en";
+
+    static DataGenerator data = new DataGenerator();
+    static List<PersonModel> GeneratedPeople = new();
+
+
+
+    public void LoadData()
     {
         data.SetSeedAndLocale(seed, locale);
         GeneratedPeople.Clear();
@@ -37,10 +43,15 @@
         Random rn = new();
         seed = rn.Next(1, 100000);
         LoadData();
+        StateHasChanged();
     }
 
-
-
+    [JSInvokable]
+    public static void HandleScroll()
+    {
+        var newResults = data.GeneratePeople().Take(10);
+        GeneratedPeople.AddRange(newResults);
+    }
 }
 
 
@@ -73,9 +84,7 @@
 </EditForm>
 
 
-
-
-<div class="container mt-5">
+<div class="container mt-5" @onmousewheel = "StateHasChanged">
     <table class="table table-striped table-bordered">
         <thead class="p-2">
             <tr>
@@ -118,5 +127,16 @@
         var rn = Math.floor(Math.random()*100000);
         document.getElementById('seedNumUpDown').value = rn;
     }
+
+    document.addEventListener('DOMContentLoaded', function (e) {
+        document.addEventListener('scroll', function (e) {
+            let documentHeight = document.body.scrollHeight;
+            let currentScroll = window.scrollY + window.innerHeight;
+            let modifier = 20;
+            if (currentScroll + modifier > documentHeight) {
+                DotNet.invokeMethodAsync('Itransition5', 'HandleScroll');
+            }
+        })
+    })
 
 </script>
