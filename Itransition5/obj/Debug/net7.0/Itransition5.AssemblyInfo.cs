@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Itransition5")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ae9a04e8bb5ba2855dfafec05d131cba29918d3c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+73e0933da0e2343c40dcbe97467366c505cb8aeb")]
 [assembly: System.Reflection.AssemblyProductAttribute("Itransition5")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Itransition5")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

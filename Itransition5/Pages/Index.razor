@@ -8,10 +8,12 @@
 
 
     public static int seed = 0;
-    private static string locale = "en";
+    public static string locale = "en";
+    public static double error = 8;
 
     static DataGenerator data = new DataGenerator();
     static List<PersonModel> GeneratedPeople = new();
+    static ErrorGenerator errorGenerator = new();
 
 
 
@@ -20,7 +22,11 @@
         data.SetSeedAndLocale(seed, locale);
         GeneratedPeople.Clear();
         var results = data.GeneratePeople().Take(20);
-        GeneratedPeople.AddRange(results);
+        foreach (var result in results)
+        {
+            data.ImplementError(result, error);
+            GeneratedPeople.Add(result);
+        }
     }
 
     private void SetLocale(ChangeEventArgs e)
@@ -38,6 +44,15 @@
         }
     }
 
+    private void SetError(ChangeEventArgs e)
+    {
+        if (double.TryParse(e.Value?.ToString(), out double value))
+        {
+            error = value;
+            LoadData();
+        }
+    }
+
     private void GenerateRandomSeed()
     {
         Random rn = new();
@@ -50,7 +65,11 @@
     public static void HandleScroll()
     {
         var newResults = data.GeneratePeople().Take(10);
-        GeneratedPeople.AddRange(newResults);
+        foreach (var result in newResults)
+        {
+            data.ImplementError(result, error);
+            GeneratedPeople.Add(result);
+        }
     }
 }
 
@@ -71,8 +90,8 @@
     </div>
     <div class="slider-control d-flex flex-row">
         <label for="errorRange" class="form-label mr-3 h4">Error:</label>
-        <input oninput="updateNumericUpDown()" type="range" class="form-range mr-2" min="0" max="10" id="errorRange">
-        <input oninput="updateNumericRange()" type="number" min="0" max="1000" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" id="errorNumUpDown">
+            <input oninput="updateNumericUpDown()" @onchange="SetError" value="@error" type="range" class="form-range mr-2" min="0" max="10" id="errorRange">
+        <input oninput="updateNumericRange()" @onchange="SetError" value="@error" type="number" min="0" max="1000" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" id="errorNumUpDown">
     </div>
     <div class="seed d-flex flex-row">
         <label for="seedNumUpDown" class="form-label mr-3 h4">Seed: </label>
