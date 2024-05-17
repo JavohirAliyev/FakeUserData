@@ -34,3 +34,4 @@ C:\Users\User\Desktop\Itransition5\Itransition5\Itransition5\obj\Debug\net7.0\It
 C:\Users\User\Desktop\Itransition5\Itransition5\Itransition5\obj\Debug\net7.0\ref\Itransition5.dll
 C:\Users\User\Desktop\Itransition5\Itransition5\Itransition5\bin\Debug\net7.0\libman.json
 C:\Users\User\Desktop\Itransition5\Itransition5\Itransition5\obj\Debug\net7.0\Itransition5.sourcelink.json
+C:\Users\User\Desktop\Itransition5\Itransition5\Itransition5\bin\Debug\net7.0\CSVFile.dll

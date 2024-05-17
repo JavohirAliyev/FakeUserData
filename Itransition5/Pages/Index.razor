@@ -3,6 +3,8 @@
 
 
 @page "/"
+@using System.Text
+@using CSVFile
 
 @code {
 
@@ -71,6 +73,26 @@
             GeneratedPeople.Add(result);
         }
     }
+
+    private string GenerateCsvContent(List<PersonModel> people)
+    {
+        var csv = new StringBuilder();
+        csv.AppendLine(CSV.Serialize(people));
+
+        return csv.ToString();
+    }   
+
+    private async Task DownloadCsv()
+    {
+        var csvContent = GenerateCsvContent(GeneratedPeople);
+        var bytes = Encoding.UTF8.GetBytes(csvContent);
+        var base64 = Convert.ToBase64String(bytes);
+        var fileName = "people.csv";
+
+        await JSRuntime.InvokeVoidAsync("downloadFile", fileName, base64);
+    }
+
+
 }
 
 
@@ -98,7 +120,7 @@
         <input @oninput="SetSeed" value="@seed" type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" id="seedNumUpDown">
         <button class="btn btn-secondary" @onclick="GenerateRandomSeed" id="seedGenerator"><i class="bi bi-shuffle"></i></button>
     </div>
-    <div class="btn btn-outline-dark">Export</div>
+        <div class="btn btn-outline-dark" @onclick="DownloadCsv">Export</div>
 </div>
 </EditForm>
 
@@ -146,6 +168,16 @@
         var rn = Math.floor(Math.random()*100000);
         document.getElementById('seedNumUpDown').value = rn;
     }
+
+    function downloadFile(fileName, contentBase64) {
+        var link = document.createElement('a');
+        link.download = fileName;
+        link.href = 'data:text/csv;base64,' + contentBase64;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
 
     document.addEventListener('DOMContentLoaded', function (e) {
         document.addEventListener('scroll', function (e) {

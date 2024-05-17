@@ -46,6 +46,10 @@
             "Bogus": {
               "target": "Package",
               "version": "[35.5.1, )"
+            },
+            "CSVFile": {
+              "target": "Package",
+              "version": "[3.1.2, )"
             }
           },
           "imports": [

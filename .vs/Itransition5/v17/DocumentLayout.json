@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\User\\Desktop\\Itransition5\\Itransition5\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{EDE5C319-F8E5-44D9-AC61-12FFB1C78FB8}|Itransition5\\Itransition5.csproj|c:\\users\\user\\desktop\\itransition5\\itransition5\\itransition5\\data\\datagenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EDE5C319-F8E5-44D9-AC61-12FFB1C78FB8}|Itransition5\\Itransition5.csproj|solutionrelative:itransition5\\data\\datagenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{EDE5C319-F8E5-44D9-AC61-12FFB1C78FB8}|Itransition5\\Itransition5.csproj|c:\\users\\user\\desktop\\itransition5\\itransition5\\itransition5\\pages\\index.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{EDE5C319-F8E5-44D9-AC61-12FFB1C78FB8}|Itransition5\\Itransition5.csproj|solutionrelative:itransition5\\pages\\index.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EDE5C319-F8E5-44D9-AC61-12FFB1C78FB8}|Itransition5\\Itransition5.csproj|c:\\users\\user\\desktop\\itransition5\\itransition5\\itransition5\\data\\datagenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EDE5C319-F8E5-44D9-AC61-12FFB1C78FB8}|Itransition5\\Itransition5.csproj|solutionrelative:itransition5\\data\\datagenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
@@ -50,7 +50,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "DataGenerator.cs",
               "DocumentMoniker": "C:\\Users\\User\\Desktop\\Itransition5\\Itransition5\\Itransition5\\Data\\DataGenerator.cs",
               "RelativeDocumentMoniker": "Itransition5\\Data\\DataGenerator.cs",
@@ -63,13 +63,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Index.razor",
               "DocumentMoniker": "C:\\Users\\User\\Desktop\\Itransition5\\Itransition5\\Itransition5\\Pages\\Index.razor",
               "RelativeDocumentMoniker": "Itransition5\\Pages\\Index.razor",
               "ToolTip": "C:\\Users\\User\\Desktop\\Itransition5\\Itransition5\\Itransition5\\Pages\\Index.razor",
               "RelativeToolTip": "Itransition5\\Pages\\Index.razor",
-              "ViewState": "AQIAAG8AAAAAAAAAAAAAAEUAAAAvAAAA",
+              "ViewState": "AQIAAEEAAAAAAAAAAAAqwFAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2024-05-08T14:39:46.148Z",
               "EditorCaption": ""

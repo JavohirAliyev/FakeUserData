@@ -14,6 +14,19 @@
             "related": ".xml"
           }
         }
+      },
+      "CSVFile/3.1.2": {
+        "type": "package",
+        "compile": {
+          "lib/net5.0/CSVFile.dll": {
+            "related": ".deps.json;.pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net5.0/CSVFile.dll": {
+            "related": ".deps.json;.pdb;.xml"
+          }
+        }
       }
     }
   },
@@ -36,11 +49,41 @@
         "lib/netstandard2.0/Bogus.dll",
         "lib/netstandard2.0/Bogus.xml"
       ]
+    },
+    "CSVFile/3.1.2": {
+      "sha512": "ZEDWKlTuVPewTuqA9T34MbjArgyuqIXqG1HWJ5qdHCEaBYHVFPzr6IrmM2LhxlN9t95ba8+cPu837z693XArdQ==",
+      "type": "package",
+      "path": "csvfile/3.1.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "csvfile.3.1.2.nupkg.sha512",
+        "csvfile.nuspec",
+        "docs/LICENSE",
+        "docs/README.md",
+        "docs/icons8-spreadsheet-96.png",
+        "lib/net20/CSVFile.dll",
+        "lib/net20/CSVFile.dll.config",
+        "lib/net20/CSVFile.pdb",
+        "lib/net40/CSVFile.dll",
+        "lib/net40/CSVFile.pdb",
+        "lib/net45/CSVFile.dll",
+        "lib/net45/CSVFile.pdb",
+        "lib/net5.0/CSVFile.deps.json",
+        "lib/net5.0/CSVFile.dll",
+        "lib/net5.0/CSVFile.pdb",
+        "lib/net5.0/CSVFile.xml",
+        "lib/netstandard20/CSVFile.deps.json",
+        "lib/netstandard20/CSVFile.dll",
+        "lib/netstandard20/CSVFile.pdb",
+        "lib/netstandard20/CSVFile.xml"
+      ]
     }
   },
   "projectFileDependencyGroups": {
     "net7.0": [
-      "Bogus >= 35.5.1"
+      "Bogus >= 35.5.1",
+      "CSVFile >= 3.1.2"
     ]
   },
   "packageFolders": {
@@ -88,6 +131,10 @@
           "Bogus": {
             "target": "Package",
             "version": "[35.5.1, )"
+          },
+          "CSVFile": {
+            "target": "Package",
+            "version": "[3.1.2, )"
           }
         },
         "imports": [
