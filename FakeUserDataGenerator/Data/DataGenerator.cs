@@ -1,23 +1,19 @@
 ﻿using Bogus;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-
 
 namespace FakeUserData.Data
 {
-	public class DataGenerator
-	{
-        public string locale;
-        public static int seed;
-        Faker<PersonModel> faker;
+    public class DataGenerator
+    {
+        private string? locale;
+        private static int seed;
+        private Faker<PersonModel> faker = null!;
         public void SetSeedAndLocale(int _seed, string _locale)
         {
             seed = _seed;
             locale = _locale;
             Randomizer.Seed = new Random(seed);
 
-            Guid GenerateGuid()
+            static Guid GenerateGuid()
             {
                 byte[] guidBytes = new byte[16];
                 Randomizer.Seed.NextBytes(guidBytes);
@@ -34,6 +30,8 @@ namespace FakeUserData.Data
         }
         private Random random = new Random(seed);
         private Bogus.Randomizer bogusRandomizer = new Bogus.Randomizer(seed);
+
+        public static global::System.Int32 Seed { get => seed; set => seed = value; }
 
         public PersonModel ImplementError(PersonModel person, double error)
         {
@@ -67,11 +65,12 @@ namespace FakeUserData.Data
         private string ModifyPhone(string input)
         {
             var bogusRandomizer = new Bogus.Randomizer();
-            var actions = new List<Func<string, string>>();
-
-            actions.Add(SwapCharacters);
-            actions.Add(RemoveACharacter);
-            actions.Add(AddDigit);
+            var actions = new List<Func<string, string>>
+            {
+                SwapCharacters,
+                RemoveACharacter,
+                AddDigit
+            };
 
             var actionIndex = bogusRandomizer.Number(0, actions.Count - 1);
             var action = actions[actionIndex];
@@ -81,11 +80,12 @@ namespace FakeUserData.Data
         private string ModifyString(string input)
         {
             var bogusRandomizer = new Bogus.Randomizer();
-            var actions = new List<Func<string, string>>();
-
-            actions.Add(SwapCharacters);
-            actions.Add(RemoveACharacter);
-            actions.Add(AddACharacter);
+            var actions = new List<Func<string, string>>
+            {
+                SwapCharacters,
+                RemoveACharacter,
+                AddACharacter
+            };
 
             var actionIndex = bogusRandomizer.Number(0, actions.Count - 1);
             var action = actions[actionIndex];
@@ -165,4 +165,3 @@ namespace FakeUserData.Data
         }
     }
 }
-
