@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 
 
-namespace Itransition5.Data
+namespace FakeUserData.Data
 {
 	public class DataGenerator
 	{

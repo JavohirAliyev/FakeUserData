@@ -1,4 +1,4 @@
-namespace Itransition5.Data
+namespace FakeUserData.Data
 {
     public class WeatherForecastService
     {
