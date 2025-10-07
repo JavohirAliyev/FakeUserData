@@ -52,18 +52,21 @@
         Random rn = new();
         seed = rn.Next(1, 100000);
         LoadData();
-        StateHasChanged();
     }
 
     [JSInvokable]
-    public static void HandleScroll()
+    public async Task HandleScrollInstance()
     {
-        var newResults = dataGenerator.GeneratePeople().Take(10);
-        foreach (var result in newResults)
+        await Task.Run(() =>
         {
-            errorGenerator.ImplementError(result, error);
-            GeneratedPeople.Add(result);
-        }
+            var newResults = dataGenerator.GeneratePeople().Take(10);
+            foreach (var result in newResults)
+            {
+                errorGenerator.ImplementError(result, error);
+                GeneratedPeople.Add(result);
+            }
+        });
+        StateHasChanged();
     }
 
     private string GenerateCsvContent(List<PersonModel> people)
@@ -82,6 +85,14 @@
         var fileName = "people.csv";
 
         await JSRuntime.InvokeVoidAsync("downloadFile", fileName, base64);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("setDotNetReference", DotNetObjectReference.Create(this));
+        }
     }
 }
 
@@ -185,14 +196,26 @@
         document.body.removeChild(link);
     }
 
+    let dotNetRef = null;
+    window.setDotNetReference = function (ref) {
+        dotNetRef = ref;
+    };
+
     document.addEventListener('DOMContentLoaded', function (e) {
+        let isOnTheBottom = false;
         document.addEventListener('scroll', function (e) {
             let documentHeight = document.body.scrollHeight;
             let currentScroll = window.scrollY + window.innerHeight;
             let modifier = 300;
-            if (currentScroll + modifier > documentHeight) {
-                DotNet.invokeMethodAsync('FakeUserData', 'HandleScroll');
+            if (currentScroll + modifier > documentHeight && !isOnTheBottom) {
+                if (dotNetRef) {
+                    dotNetRef.invokeMethodAsync('HandleScrollInstance');
+                }
+                isOnTheBottom = true;
+            }
+            if (documentHeight - currentScroll > modifier && isOnTheBottom) {
+                isOnTheBottom = false;
             }
         })
-    })
+    });
 </script>
