@@ -13,7 +13,7 @@
     public void LoadData()
     {
         GeneratedPeople.Clear();
-        dataGenerator.UpdateSeed(seed);
+        dataGenerator.UpdateSeedAndLocale(seed, locale);
         errorGenerator.UpdateSeed(seed);
         var results = dataGenerator.GeneratePeople().Take(20);
         foreach (var result in results)

@@ -1,20 +1,18 @@
-﻿using System.Reflection;
-using Bogus;
-using Bogus.Platform;
+﻿using Bogus;
 using FakeUserData.Models;
+using FakeUserData.Utils;
 
 namespace FakeUserData.Services
 {
     public class ErrorGenerator
     {
         private int seed;
-        private readonly Random random;
         private readonly Randomizer bogusRandomizer;
 
         public ErrorGenerator(int _seed)
         {
             seed = _seed;
-            random = new Random(seed);
+            Randomizer.Seed = new Random(seed);
             bogusRandomizer = new Randomizer(seed);
         }
 
@@ -22,10 +20,11 @@ namespace FakeUserData.Services
         {
             if (error > 0)
             {
-                var fields = person.GetType().GetAllMembers(BindingFlags.Public);
-                foreach (var field in fields)
+                var type = person.GetType();
+                var properties = type.GetProperties().ToList();
+                foreach (var prop in properties)
                 {
-                    switch (field.Name)
+                    switch (prop.Name)
                     {
                         case "Name":
                             person.Name = ModifyString(person.Name);
@@ -86,8 +85,8 @@ namespace FakeUserData.Services
             }
 
             char[] chars = s.ToCharArray();
-            int i = random.Next(chars.Length);
-            int j = random.Next(chars.Length);
+            int i = bogusRandomizer.Int(0, chars.Length - 1);
+            int j = bogusRandomizer.Int(0, chars.Length - 1);
             (chars[i], chars[j]) = (chars[j], chars[i]);
 
             return new string(chars);
@@ -100,11 +99,11 @@ namespace FakeUserData.Services
                 return s;
             }
 
-            List<char> chars = s.ToList();
-            int j = random.Next(chars.Count);
-            chars.RemoveAt(j);
+            char[] chars = s.ToCharArray();
+            int index = bogusRandomizer.Int(0, chars.Length - 1);
+            chars.RemoveFromArrayAtIndex(index);
 
-            return new string(chars.ToArray());
+            return new string([.. chars]);
         }
 
         private string AddACharacter(string s)
@@ -125,7 +124,7 @@ namespace FakeUserData.Services
             {
                 randomChar = bogusRandomizer.Char('a', 'z');
             }
-            int j = random.Next(chars.Count + 1);
+            int j = bogusRandomizer.Int(0, chars.Count - 1);
             chars.Insert(j, randomChar);
 
             return new string([.. chars]);
@@ -137,10 +136,10 @@ namespace FakeUserData.Services
                 return s;
             List<char> chars = s.ToList();
             char randomChar = bogusRandomizer.Char('0', '9');
-            int j = random.Next(chars.Count + 1);
+            int j = bogusRandomizer.Int(0, chars.Count - 1);
             chars.Insert(j, randomChar);
 
-            return new string(chars.ToArray());
+            return new string([.. chars]);
         }
     }
 }

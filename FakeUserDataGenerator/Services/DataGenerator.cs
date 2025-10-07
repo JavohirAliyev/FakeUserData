@@ -5,32 +5,22 @@ namespace FakeUserData.Services
 {
     public class DataGenerator
     {
-        private readonly string locale;
+        private string locale;
         private int seed;
-        private readonly Faker<PersonModel> faker;
+        private Faker<PersonModel> faker = null!;
 
         public DataGenerator(int _seed, string _locale)
         {
             seed = _seed;
             locale = _locale;
-            Randomizer.Seed = new Random(seed);
-
-            faker = new Faker<PersonModel>(locale)
-                .UseSeed(seed)
-                .RuleFor(u => u.Id, f => GenerateGuid(seed))
-                .RuleFor(u => u.Name, f => f.Name.FullName())
-                .RuleFor(u => u.Address, f => f.Address.FullAddress())
-                .RuleFor(u => u.Phone, f => f.Phone.PhoneNumber());
+            ConfigureFaker();
         }
 
-        public void UpdateSeed(int _seed)
+        public void UpdateSeedAndLocale(int _seed, string _locale)
         {
             seed = _seed;
-        }
-
-        public PersonModel GeneratePerson()
-        {
-            return faker.Generate();
+            locale = _locale;
+            ConfigureFaker();
         }
 
         public IEnumerable<PersonModel> GeneratePeople()
@@ -44,6 +34,16 @@ namespace FakeUserData.Services
             byte[] guidBytes = new byte[16];
             random.NextBytes(guidBytes);
             return new Guid(guidBytes);
+        }
+
+        private void ConfigureFaker()
+        {
+            Randomizer.Seed = new Random(seed);
+            faker = new Faker<PersonModel>(locale)
+                .RuleFor(u => u.Id, (f, u) => GenerateGuid(seed + f.IndexFaker))
+                .RuleFor(u => u.Name, f => f.Name.FullName())
+                .RuleFor(u => u.Address, f => f.Address.FullAddress())
+                .RuleFor(u => u.Phone, f => f.Phone.PhoneNumber());
         }
     }
 }
