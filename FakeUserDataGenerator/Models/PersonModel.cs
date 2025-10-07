@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FakeUserData.Data
+﻿namespace FakeUserData.Models
 {
     public record PersonModel
     {
@@ -13,8 +11,5 @@ namespace FakeUserData.Data
         {
             Id = Guid.NewGuid();
         }
-
     }
-
-
 }

@@ -1,32 +1,24 @@
 ﻿@inject IJSRuntime JSRuntime
-
-
-
 @page "/"
-@using System.Text
-@using CSVFile
 
 @code {
-
-
     public static int seed = 0;
     public static string locale = "en";
     public static double error = 0;
 
-    static DataGenerator data = new DataGenerator();
-    static List<PersonModel> GeneratedPeople = new();
-    static ErrorGenerator errorGenerator = new();
-
-
+    static DataGenerator dataGenerator = new DataGenerator(seed, locale);
+    static ErrorGenerator errorGenerator = new ErrorGenerator(seed);
+    static List<PersonModel> GeneratedPeople = new List<PersonModel>();
 
     public void LoadData()
     {
-        data.SetSeedAndLocale(seed, locale);
         GeneratedPeople.Clear();
-        var results = data.GeneratePeople().Take(20);
+        dataGenerator.UpdateSeed(seed);
+        errorGenerator.UpdateSeed(seed);
+        var results = dataGenerator.GeneratePeople().Take(20);
         foreach (var result in results)
         {
-            data.ImplementError(result, error);
+            errorGenerator.ImplementError(result, error);
             GeneratedPeople.Add(result);
         }
     }
@@ -66,10 +58,10 @@
     [JSInvokable]
     public static void HandleScroll()
     {
-        var newResults = data.GeneratePeople().Take(10);
+        var newResults = dataGenerator.GeneratePeople().Take(10);
         foreach (var result in newResults)
         {
-            data.ImplementError(result, error);
+            errorGenerator.ImplementError(result, error);
             GeneratedPeople.Add(result);
         }
     }
@@ -91,74 +83,84 @@
 
         await JSRuntime.InvokeVoidAsync("downloadFile", fileName, base64);
     }
-
-
 }
-
 
 <PageTitle>Fake Data</PageTitle>
 
-<EditForm id="form" Model=@data>
-    <div class="container container-md mt-5 d-flex flex-row justify-content-between">
-        <div class="dropdown d-flex flex-row">
-            <label for="selectRegion" class="form-dropdown mr-3 h4">Region: </label>
-            <select @onchange="SetLocale" id="selectRegion" name="number">
-                <option value="en">USA</option>
-                <option value="pl">Poland</option>
-                <option value="it">Italy</option>
-                <option value="es">Spain</option>
-            </select>
-
+<div class="container-fluid px-5 py-4" style="max-width: 1400px;">
+    <div class="card shadow-lg mb-4">
+        <div class="card-body">
+            <form class="row g-4 align-items-center">
+                <div class="col-md-3">
+                    <label for="selectRegion" class="form-label fw-bold">Region</label>
+                    <select @onchange="SetLocale" id="selectRegion" class="form-select">
+                        <option value="en">USA</option>
+                        <option value="pl">Poland</option>
+                        <option value="it">Italy</option>
+                        <option value="es">Spain</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="errorRange" class="form-label fw-bold">Error</label>
+                    <div class="input-group">
+                        <input oninput="updateNumericUpDown()" @onchange="SetError" value="@error" type="range"
+                            class="form-range" min="0" max="10" id="errorRange" style="width: 120px;">
+                        <input oninput="updateNumericRange()" @onchange="SetError" value="@error" type="number" min="0"
+                            max="1000" class="form-control ms-2" id="errorNumUpDown" style="max-width: 80px;">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="seedNumUpDown" class="form-label fw-bold">Seed</label>
+                    <div class="input-group">
+                        <input @oninput="SetSeed" value="@seed" type="number" class="form-control" id="seedNumUpDown"
+                            style="max-width: 100px;">
+                        <button class="btn btn-outline-secondary ms-2" type="button" @onclick="GenerateRandomSeed"
+                            id="seedGenerator" title="Randomize">
+                            <i class="bi bi-shuffle"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button class="btn btn-dark w-100" type="button" @onclick="DownloadCsv">
+                        <i class="bi bi-download me-2"></i>Export CSV
+                    </button>
+                </div>
+            </form>
         </div>
-        <div class="slider-control d-flex flex-row">
-            <label for="errorRange" class="form-label mr-3 h4">Error:</label>
-            <input oninput="updateNumericUpDown()" @onchange="SetError" value="@error" type="range"
-                class="form-range mr-2" min="0" max="10" id="errorRange">
-            <input oninput="updateNumericRange()" @onchange="SetError" value="@error" type="number" min="0" max="1000"
-                class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"
-                id="errorNumUpDown">
-        </div>
-        <div class="seed d-flex flex-row">
-            <label for="seedNumUpDown" class="form-label mr-3 h4">Seed: </label>
-            <input @oninput="SetSeed" value="@seed" type="number" class="form-control" aria-label="Sizing example input"
-                aria-describedby="inputGroup-sizing-default" id="seedNumUpDown">
-            <button class="btn btn-secondary" @onclick="GenerateRandomSeed" id="seedGenerator"><i
-                    class="bi bi-shuffle"></i></button>
-        </div>
-        <div class="btn btn-outline-dark" @onclick="DownloadCsv">Export</div>
     </div>
-</EditForm>
 
-
-<div class="container mt-5" @onmousewheel="StateHasChanged">
-    <table class="table table-striped table-bordered">
-        <thead class="p-2">
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Guid</th>
-                <th scope="col">Name</th>
-                <th scope="col">Address</th>
-                <th scope="col">Phone number</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var p in GeneratedPeople)
-            {
-                <tr>
-                    <td>@(GeneratedPeople.IndexOf(p) + 1)</td>
-                    <td>@p.Id</td>
-                    <td>@p.Name</td>
-                    <td>@p.Address</td>
-                    <td>@p.Phone</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="card shadow-lg">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Guid</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Address</th>
+                            <th scope="col">Phone number</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in GeneratedPeople)
+                        {
+                            <tr>
+                                <td>@(GeneratedPeople.IndexOf(p) + 1)</td>
+                                <td>@p.Id</td>
+                                <td>@p.Name</td>
+                                <td>@p.Address</td>
+                                <td>@p.Phone</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
-
 <script>
-
     function updateNumericUpDown() {
         var rangeValue = document.getElementById('errorRange').value;
         document.getElementById('errorNumUpDown').value = rangeValue;
@@ -183,16 +185,14 @@
         document.body.removeChild(link);
     }
 
-
     document.addEventListener('DOMContentLoaded', function (e) {
         document.addEventListener('scroll', function (e) {
             let documentHeight = document.body.scrollHeight;
             let currentScroll = window.scrollY + window.innerHeight;
-            let modifier = 200;
+            let modifier = 300;
             if (currentScroll + modifier > documentHeight) {
                 DotNet.invokeMethodAsync('FakeUserData', 'HandleScroll');
             }
         })
     })
-
 </script>

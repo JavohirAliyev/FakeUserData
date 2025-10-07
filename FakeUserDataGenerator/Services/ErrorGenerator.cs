@@ -1,49 +1,31 @@
-﻿using Bogus;
+﻿using System.Reflection;
+using Bogus;
+using Bogus.Platform;
+using FakeUserData.Models;
 
-namespace FakeUserData.Data
+namespace FakeUserData.Services
 {
-    public class DataGenerator
+    public class ErrorGenerator
     {
-        private string? locale;
-        private static int seed;
-        private Faker<PersonModel> faker = null!;
-        public void SetSeedAndLocale(int _seed, string _locale)
+        private int seed;
+        private readonly Random random;
+        private readonly Randomizer bogusRandomizer;
+
+        public ErrorGenerator(int _seed)
         {
             seed = _seed;
-            locale = _locale;
-            Randomizer.Seed = new Random(seed);
-
-            static Guid GenerateGuid()
-            {
-                byte[] guidBytes = new byte[16];
-                Randomizer.Seed.NextBytes(guidBytes);
-                return new Guid(guidBytes);
-            }
-
-            faker = new Faker<PersonModel>(locale)
-                .RuleFor(u => u.Id, f => GenerateGuid())
-                .RuleFor(u => u.Name, f => f.Name.FullName())
-                .RuleFor(u => u.Address, f => f.Address.FullAddress())
-                .RuleFor(u => u.Phone, f => f.Phone.PhoneNumber());
-
-
+            random = new Random(seed);
+            bogusRandomizer = new Randomizer(seed);
         }
-        private Random random = new Random(seed);
-        private Bogus.Randomizer bogusRandomizer = new Bogus.Randomizer(seed);
-
-        public static global::System.Int32 Seed { get => seed; set => seed = value; }
 
         public PersonModel ImplementError(PersonModel person, double error)
         {
             if (error > 0)
             {
-                var bogusRandomizer = new Bogus.Randomizer();
-
-                var fields = bogusRandomizer.ListItems(new[] { "Name", "Address", "Phone" }, 3);
-
+                var fields = person.GetType().GetAllMembers(BindingFlags.Public);
                 foreach (var field in fields)
                 {
-                    switch (field)
+                    switch (field.Name)
                     {
                         case "Name":
                             person.Name = ModifyString(person.Name);
@@ -59,12 +41,12 @@ namespace FakeUserData.Data
 
                 return ImplementError(person, error - 1);
             }
+
             return person;
         }
 
         private string ModifyPhone(string input)
         {
-            var bogusRandomizer = new Bogus.Randomizer();
             var actions = new List<Func<string, string>>
             {
                 SwapCharacters,
@@ -77,9 +59,13 @@ namespace FakeUserData.Data
             return action.Invoke(input);
         }
 
+        public void UpdateSeed(int _seed)
+        {
+            seed = _seed;
+        }
+
         private string ModifyString(string input)
         {
-            var bogusRandomizer = new Bogus.Randomizer();
             var actions = new List<Func<string, string>>
             {
                 SwapCharacters,
@@ -90,7 +76,6 @@ namespace FakeUserData.Data
             var actionIndex = bogusRandomizer.Number(0, actions.Count - 1);
             var action = actions[actionIndex];
             return action.Invoke(input);
-
         }
 
         private string SwapCharacters(string s)
@@ -121,13 +106,14 @@ namespace FakeUserData.Data
 
             return new string(chars.ToArray());
         }
+
         private string AddACharacter(string s)
         {
             if (s.Length > 50)
             {
                 return s;
             }
-            List<char> chars = s.ToList();
+            List<char> chars = [.. s];
             bool isUpperCase = bogusRandomizer.Bool();
             char randomChar;
 
@@ -142,8 +128,9 @@ namespace FakeUserData.Data
             int j = random.Next(chars.Count + 1);
             chars.Insert(j, randomChar);
 
-            return new string(chars.ToArray());
+            return new string([.. chars]);
         }
+
         private string AddDigit(string s)
         {
             if (s.Length > 12)
@@ -154,14 +141,6 @@ namespace FakeUserData.Data
             chars.Insert(j, randomChar);
 
             return new string(chars.ToArray());
-        }
-        public PersonModel GeneratePerson()
-        {
-            return faker.Generate();
-        }
-        public IEnumerable<PersonModel> GeneratePeople()
-        {
-            return faker.GenerateForever();
         }
     }
 }
