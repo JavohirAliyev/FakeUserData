@@ -87,6 +87,11 @@
         await JSRuntime.InvokeVoidAsync("downloadFile", fileName, base64);
     }
 
+    protected override void OnInitialized()
+    {
+        LoadData();
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -196,9 +201,9 @@
         document.body.removeChild(link);
     }
 
-    let dotNetRef = null;
+    dotNetInvoker = null;
     window.setDotNetReference = function (ref) {
-        dotNetRef = ref;
+        dotNetInvoker = ref;
     };
 
     document.addEventListener('DOMContentLoaded', function (e) {
@@ -208,8 +213,8 @@
             let currentScroll = window.scrollY + window.innerHeight;
             let modifier = 300;
             if (currentScroll + modifier > documentHeight && !isOnTheBottom) {
-                if (dotNetRef) {
-                    dotNetRef.invokeMethodAsync('HandleScrollInstance');
+                if (dotNetInvoker) {
+                    dotNetInvoker.invokeMethodAsync('HandleScrollInstance');
                 }
                 isOnTheBottom = true;
             }
